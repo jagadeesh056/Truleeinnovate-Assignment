@@ -55,6 +55,7 @@
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s;
+    margin-right: 13px;
   }
   
   .edit-button:hover {

@@ -47,18 +47,13 @@ const candidateData = [
   },
 ]
 
-// Seed the database
 const seedDB = async () => {
   try {
-    // Clear existing data
     await Candidate.deleteMany({})
     console.log("Deleted all existing candidates")
 
-    // Insert new data
     const insertedCandidates = await Candidate.insertMany(candidateData)
     console.log(`Added ${insertedCandidates.length} candidates to the database`)
-
-    // Disconnect from MongoDB
     mongoose.disconnect()
     console.log("MongoDB disconnected")
   } catch (error) {
@@ -67,5 +62,4 @@ const seedDB = async () => {
   }
 }
 
-// Run the seed function
 seedDB()

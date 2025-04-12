@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import CandidateTable from "./components/CandidateTable";
 import AddCandidateModal from "./components/AddCandidate";
-import EditCandidateModal from "./components/EditCandidate"; // New import
+import EditCandidateModal from "./components/EditCandidate";
 import FilterPanel from "./components/FilterPanel";
 import "./App.css";
 
@@ -9,8 +9,8 @@ function App() {
   const [candidates, setCandidates] = useState([]);
   const [filteredCandidates, setFilteredCandidates] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // New state
-  const [currentCandidate, setCurrentCandidate] = useState(null); // New state
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [currentCandidate, setCurrentCandidate] = useState(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,20 +21,16 @@ function App() {
     skills: [],
   });
 
-  // API base URL - change this to match your backend server
-  const API_BASE_URL = "http://localhost:5000"; // Update this to your actual backend URL
+  const API_BASE_URL = "http://localhost:5000";
 
-  // Fetch candidates on component mount and page change
   useEffect(() => {
     fetchCandidates();
   }, [currentPage]);
 
-  // Apply search and filters
   useEffect(() => {
     applyFiltersAndSearch();
   }, [candidates, searchTerm, filters]);
 
-  // Fetch candidates from the API
   const fetchCandidates = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/candidates?page=${currentPage}`);
@@ -48,7 +44,6 @@ function App() {
       setTotalPages(data.totalPages || 1);
     } catch (error) {
       console.error("Error fetching candidates:", error);
-      // Set empty array to prevent errors if fetch fails
       setCandidates([]);
     }
   };
@@ -61,7 +56,6 @@ function App() {
     
     let filtered = [...candidates];
 
-    // Apply search
     if (searchTerm) {
       filtered = filtered.filter(
         (candidate) =>
@@ -71,7 +65,6 @@ function App() {
       );
     }
 
-    // Apply filters
     if (filters.gender) {
       filtered = filtered.filter((candidate) => candidate.gender === filters.gender);
     }
@@ -89,10 +82,8 @@ function App() {
     setFilteredCandidates(filtered);
   };
 
-  // Add a new candidate
   const handleAddCandidate = async (newCandidate) => {
     try {
-      // Convert experience to a number
       newCandidate.experience = parseInt(newCandidate.experience, 10);
       
       const response = await fetch(`${API_BASE_URL}/api/candidates`, {
@@ -112,17 +103,15 @@ function App() {
       const addedCandidate = await response.json();
       console.log("Candidate added successfully:", addedCandidate);
       setIsModalOpen(false);
-      fetchCandidates(); // Refresh the candidates list
+      fetchCandidates();
     } catch (error) {
       console.error("Error adding candidate:", error);
       alert("Failed to add candidate. Please try again.");
     }
   };
 
-  // Edit an existing candidate
   const handleEditCandidate = async (updatedCandidate) => {
     try {
-      // Convert experience to a number
       updatedCandidate.experience = parseInt(updatedCandidate.experience, 10);
       
       const response = await fetch(`${API_BASE_URL}/api/candidates/${updatedCandidate._id}`, {
@@ -143,14 +132,13 @@ function App() {
       console.log("Candidate updated successfully:", editedCandidate);
       setIsEditModalOpen(false);
       setCurrentCandidate(null);
-      fetchCandidates(); // Refresh the candidates list
+      fetchCandidates();
     } catch (error) {
       console.error("Error updating candidate:", error);
       alert("Failed to update candidate. Please try again.");
     }
   };
 
-  // Open edit modal with candidate data
   const handleOpenEditModal = (candidate) => {
     setCurrentCandidate(candidate);
     setIsEditModalOpen(true);
@@ -167,6 +155,34 @@ function App() {
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+
+  
+const handleDeleteCandidate = async (candidateId) => {
+  if (!window.confirm("Are you sure you want to delete this candidate?")) {
+    return;
+  }
+  
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/candidates/${candidateId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Error response from server:", errorText);
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    console.log("Candidate deleted successfully");
+    fetchCandidates(); // Refresh the candidates list
+  } catch (error) {
+    console.error("Error deleting candidate:", error);
+    alert("Failed to delete candidate. Please try again.");
+  }
+};
 
   return (
     <div className="app-container">
@@ -227,6 +243,7 @@ function App() {
       <CandidateTable 
         candidates={filteredCandidates.length > 0 ? filteredCandidates : candidates} 
         onEditCandidate={handleOpenEditModal} 
+        onDeleteCandidate={handleDeleteCandidate}
       />
 
       {isModalOpen && <AddCandidateModal onClose={() => setIsModalOpen(false)} onAddCandidate={handleAddCandidate} />}

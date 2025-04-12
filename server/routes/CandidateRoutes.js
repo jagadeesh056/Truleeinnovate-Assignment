@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const Candidate = require("../models/Candidate"); // Make sure this is correctly spelled
+const Candidate = require("../models/Candidate");
 
-// Get all candidates with pagination
 router.get("/", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -25,7 +24,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get a single candidate by ID
 router.get("/:id", async (req, res) => {
   try {
     const candidate = await Candidate.findById(req.params.id);
@@ -41,10 +39,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Create a new candidate
 router.post("/", async (req, res) => {
   try {
-    console.log("Received candidate data:", req.body);
     const newCandidate = new Candidate(req.body);
     const savedCandidate = await newCandidate.save();
     res.status(201).json(savedCandidate);
@@ -54,7 +50,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Update a candidate
 router.put("/:id", async (req, res) => {
   try {
     const updatedCandidate = await Candidate.findByIdAndUpdate(req.params.id, req.body, {
@@ -73,7 +68,6 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Delete a candidate
 router.delete("/:id", async (req, res) => {
   try {
     const deletedCandidate = await Candidate.findByIdAndDelete(req.params.id);

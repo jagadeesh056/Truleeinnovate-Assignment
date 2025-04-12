@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./AddCandidate.css"; // Reuse the same CSS
+import "./AddCandidate.css";
 
 const EditCandidateModal = ({ candidate, onClose, onEditCandidate }) => {
   const [formData, setFormData] = useState({
@@ -27,7 +27,6 @@ const EditCandidateModal = ({ candidate, onClose, onEditCandidate }) => {
     "CSS",
   ];
 
-  // Initialize form data with candidate data when component mounts
   useEffect(() => {
     if (candidate) {
       setFormData({

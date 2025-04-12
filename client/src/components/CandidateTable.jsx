@@ -1,6 +1,6 @@
 import "./CandidateTable.css";
 
-const CandidateTable = ({ candidates, onEditCandidate }) => {
+const CandidateTable = ({ candidates, onEditCandidate, onDeleteCandidate  }) => {
   if (!candidates || candidates.length === 0) {
     return <div className="no-candidates">No candidates found.</div>;
   }
@@ -35,11 +35,16 @@ const CandidateTable = ({ candidates, onEditCandidate }) => {
               </td>
               <td>{candidate.experience} {candidate.experience === 1 ? 'Year' : 'Years'}</td>
               <td>
-                <button 
-                  className="edit-button" 
+              <button
+                  className="edit-button"
                   onClick={() => onEditCandidate(candidate)}
                 >
-                  <i className="fas fa-edit"></i> Edit
+                  <i className="fas fa-edit"></i>
+                </button>
+                <button
+                  className="delete-button"
+                  onClick={() => onDeleteCandidate(candidate._id)}
+                > <i className="fas fa-trash"></i>
                 </button>
               </td>
             </tr>
