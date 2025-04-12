@@ -21,7 +21,7 @@ function App() {
     skills: [],
   });
 
-  const API_BASE_URL = "http://localhost:5000";
+  const API_BASE_URL = "https://truleeinnovate-fi1e.onrender.com";
 
   useEffect(() => {
     fetchCandidates();
@@ -177,7 +177,7 @@ const handleDeleteCandidate = async (candidateId) => {
     }
 
     console.log("Candidate deleted successfully");
-    fetchCandidates(); // Refresh the candidates list
+    fetchCandidates();
   } catch (error) {
     console.error("Error deleting candidate:", error);
     alert("Failed to delete candidate. Please try again.");
